@@ -48,6 +48,27 @@ document.addEventListener('DOMContentLoaded', function() {
         generateGrid();
     });
 
+    // Fitur print
+    document.getElementById('printGrid').addEventListener('click', function() {
+        window.print();
+    });
+
+    // Fitur export Excel
+    document.getElementById('exportExcel').addEventListener('click', function() {
+        // Ambil semua nomor titik yang berwarna (shape/active)
+        let colored = dots.filter(dot => dot.classList.contains('shape') || dot.classList.contains('active'));
+        let data = colored.map(dot => ({
+            Nomor: dot.textContent,
+            Baris: parseInt(dot.dataset.row) + 1,
+            Kolom: parseInt(dot.dataset.col) + 1
+        }));
+        // Buat worksheet dan file Excel
+        let ws = XLSX.utils.json_to_sheet(data);
+        let wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Formasi");
+        XLSX.writeFile(wb, "formasi-textmobs.xlsx");
+    });
+
     // Simple shape generator: maps text to grid (centered)
     function generateShape() {
         const text = shapeTextInput.value.trim();
